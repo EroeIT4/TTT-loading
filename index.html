@@ -745,8 +745,9 @@ function buildPlayers() {
 }
 
 // ── Steam proxy ───────────────────────────────────────────────────────────────
+// ── Steam proxy ───────────────────────────────────────────────────────────────
 function fetchSteam(steamid, callback) {
-  fetch('https://steamcommunity.com/profiles/' + steamid + '/?xml=1')
+  fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://steamcommunity.com/profiles/' + steamid + '/?xml=1'))
     .then(function(r) { return r.text(); })
     .then(function(xml) { callback(xml); })
     .catch(function(){});
@@ -754,7 +755,7 @@ function fetchSteam(steamid, callback) {
 
 var OWNER_STEAMID64 = '76561198419173318';
 fetchSteam(OWNER_STEAMID64, function(xml) {
-  var m = xml.match(/<avatarFull><!\[CDATA\[(.*?)\]\]><\/avatarFull>/);
+  var m = xml.match(/<avatarFull>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/avatarFull>/);
   if (m && m[1]) document.querySelector('.staff-avatar').src = m[1];
 });
 
@@ -806,27 +807,37 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
 
   if (steamID && steamID !== '0') {
     fetchSteam(steamID, function(xml) {
-      var avatarM = xml.match(/<avatarFull><!\[CDATA\[(.*?)\]\]><\/avatarFull>/);
-      var nameM   = xml.match(/<steamID><!\[CDATA\[(.*?)\]\]><\/steamID>/);
+      var avatarM = xml.match(/<avatarFull>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/avatarFull>/);
+      var nameM   = xml.match(/<steamID>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/steamID>/);
       if (avatarM && avatarM[1]) updateAvatar(avatarM[1]);
       if (nameM   && nameM[1])   document.getElementById('js-player-name').textContent = nameM[1];
     });
   }
 }
 
+var _filesTotal = 0;
+var _filesNeeded = 0;
+
+function SetFilesTotal(total) {
+  _filesTotal = parseInt(total) || 0;
+}
+
+function SetFilesNeeded(needed) {
+  _filesNeeded = parseInt(needed) || 0;
+  clearInterval(_barFallback); // Ferma l'avanzamento finto
+  
+  if (_filesTotal > 0) {
+    var downloaded = _filesTotal - _filesNeeded;
+    var pct = (downloaded / _filesTotal) * 100;
+    setBar(Math.min(100, Math.max(0, pct)));
+  }
+}
+
 function SetStatusChanged(status) {
   if (status) document.getElementById('status-text').textContent = status;
-}
-
-function SetFilesNeeded(n) {
-  _filesNeeded = parseInt(n) || 0;
-  if (_filesNeeded > 0) clearInterval(_barFallback);
-}
-
-function SetFilesDownloaded(n) {
-  _filesDownloaded = parseInt(n) || 0;
-  if (_filesNeeded > 0) {
-    setBar(Math.min(100, Math.round(_filesDownloaded / _filesNeeded * 100)));
+  // Se GMod dice che ha finito di scaricare, manda la barra al 100%
+  if (status === 'Workshop Complete' || status === 'Sending client info...') {
+    setBar(100);
   }
 }
 

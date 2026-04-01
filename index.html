@@ -532,7 +532,8 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
       <div class="panel-title">Staff di Gioco</div>
       <div class="staff-list">
         <div class="staff-member">
-          <img class="staff-avatar" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Avatar">
+          <img class="staff-avatar" src="https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg" alt="Avatar">
+          <div class="staff-info">
             <div class="staff-name">Hero05IT4</div>
             <div class="staff-role role-owner">Owner</div>
           </div>
@@ -746,22 +747,23 @@ function buildPlayers() {
 // ── Steam proxy ───────────────────────────────────────────────────────────────
 // ── Steam proxy ───────────────────────────────────────────────────────────────
 function fetchSteam(steamid, callback) {
-  // Usiamo un proxy diverso se AllOrigins fa i capricci
-  var proxyUrl = 'https://api.allorigins.win/raw?url=';
+  // Nuovo proxy più permissivo
+  var proxyUrl = 'https://corsproxy.io/?';
   var steamUrl = 'https://steamcommunity.com/profiles/' + steamid + '/?xml=1';
 
   fetch(proxyUrl + encodeURIComponent(steamUrl))
     .then(function(response) {
-      if (!response.ok) throw new Error('Network response was not ok');
       return response.text();
     })
     .then(function(str) {
-      // Estrazione robusta dell'avatar
+      if (!str) return callback(null, null);
+      
+      // Regex migliorata per estrarre dati dall'XML di Steam
       var avatarMatch = str.match(/<avatarFull>[\s\S]*?([^<\[\]\s]+\.(?:jpg|png|jpeg))[\s\S]*?<\/avatarFull>/i);
       var nameMatch = str.match(/<steamID>[\s\S]*?([^<\[\]\s]+)[\s\S]*?<\/steamID>/i);
       
-      var avatar = avatarMatch ? avatarMatch[1].trim() : null;
-      var name = nameMatch ? nameMatch[1].trim() : null;
+      var avatar = (avatarMatch && avatarMatch[1]) ? avatarMatch[1].trim() : null;
+      var name = (nameMatch && nameMatch[1]) ? nameMatch[1].trim() : null;
       
       callback(avatar, name);
     })
@@ -830,11 +832,12 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
   if (steamID && steamID !== '0') {
     fetchSteam(steamID, function(avatar, name) {
       if (avatar) {
+        // Usa l'ID corretto che hai nell'HTML
         var pImg = document.getElementById('player-avatar-img');
         var pLetter = document.getElementById('player-avatar-letter');
         if (pImg) {
           pImg.src = avatar;
-          pImg.style.display = 'block'; // Mostra l'immagine caricata
+          pImg.style.display = 'block'; 
           if (pLetter) pLetter.style.display = 'none'; // Nasconde il punto di domanda
         }
       }

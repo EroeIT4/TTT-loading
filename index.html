@@ -773,9 +773,13 @@ function fetchSteam(steamid, callback) {
 }
 
 var OWNER_STEAMID64 = '76561198419173318';
-fetchSteam(OWNER_STEAMID64, function(xml) {
-  var m = xml.match(/<avatarFull>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/avatarFull>/);
-  if (m && m[1]) document.querySelector('.staff-avatar').src = m[1];
+fetchSteam(OWNER_STEAMID64, function(avatar, name) {
+  if (avatar) {
+    document.querySelector('.staff-avatar').src = avatar;
+  } else {
+    // Se fallisce, mettiamo una foto di default invece del punto ?
+    document.querySelector('.staff-avatar').src = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg";
+  }
 });
 
 // ── Orologio e puntini ────────────────────────────────────────────────────────
@@ -825,9 +829,15 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
   buildSlots(_currentPlayers, _maxPlayers);
 
   if (steamID && steamID !== '0') {
-    fetchSteam(steamID, function(avatarUrl, steamName) {
-      if (avatarUrl) updateAvatar(avatarUrl);
-      if (steamName) document.getElementById('js-player-name').textContent = steamName;
+    fetchSteam(steamID, function(avatar, name) {
+      if (avatar) {
+        // Aggiorna l'avatar del giocatore
+        var pImg = document.getElementById('js-player-avatar');
+        if (pImg) pImg.src = avatar;
+      }
+      if (name) {
+        document.getElementById('js-player-name').textContent = name;
+      }
     });
   }
 }

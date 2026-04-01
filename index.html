@@ -747,15 +747,29 @@ function buildPlayers() {
 // ── Steam proxy ───────────────────────────────────────────────────────────────
 // ── Steam proxy ───────────────────────────────────────────────────────────────
 function fetchSteam(steamid, callback) {
-  fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://steamcommunity.com/profiles/' + steamid + '/?xml=1'))
-    .then(r => r.text())
-    .then(xml => {
-      // Questa regex funziona sia con che senza CDATA
-      var avatar = xml.match(/<avatarFull>.*?([^<\[\]]+).*?<\/avatarFull>/);
-      var name = xml.match(/<steamID>.*?([^<\[\]]+).*?<\/steamID>/);
-      callback(avatar ? avatar[1] : null, name ? name[1] : null);
+  // Usiamo un proxy diverso se AllOrigins fa i capricci
+  var proxyUrl = 'https://api.allorigins.win/raw?url=';
+  var steamUrl = 'https://steamcommunity.com/profiles/' + steamid + '/?xml=1';
+
+  fetch(proxyUrl + encodeURIComponent(steamUrl))
+    .then(function(response) {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.text();
     })
-    .catch(() => {});
+    .then(function(str) {
+      // Estrazione robusta dell'avatar
+      var avatarMatch = str.match(/<avatarFull>[\s\S]*?([^<\[\]\s]+\.(?:jpg|png|jpeg))[\s\S]*?<\/avatarFull>/i);
+      var nameMatch = str.match(/<steamID>[\s\S]*?([^<\[\]\s]+)[\s\S]*?<\/steamID>/i);
+      
+      var avatar = avatarMatch ? avatarMatch[1].trim() : null;
+      var name = nameMatch ? nameMatch[1].trim() : null;
+      
+      callback(avatar, name);
+    })
+    .catch(function(err) {
+      console.error("Errore fetch Steam:", err);
+      callback(null, null);
+    });
 }
 
 var OWNER_STEAMID64 = '76561198419173318';

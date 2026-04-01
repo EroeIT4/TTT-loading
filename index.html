@@ -748,9 +748,14 @@ function buildPlayers() {
 // ── Steam proxy ───────────────────────────────────────────────────────────────
 function fetchSteam(steamid, callback) {
   fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://steamcommunity.com/profiles/' + steamid + '/?xml=1'))
-    .then(function(r) { return r.text(); })
-    .then(function(xml) { callback(xml); })
-    .catch(function(){});
+    .then(r => r.text())
+    .then(xml => {
+      // Questa regex funziona sia con che senza CDATA
+      var avatar = xml.match(/<avatarFull>.*?([^<\[\]]+).*?<\/avatarFull>/);
+      var name = xml.match(/<steamID>.*?([^<\[\]]+).*?<\/steamID>/);
+      callback(avatar ? avatar[1] : null, name ? name[1] : null);
+    })
+    .catch(() => {});
 }
 
 var OWNER_STEAMID64 = '76561198419173318';
@@ -806,11 +811,9 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
   buildSlots(_currentPlayers, _maxPlayers);
 
   if (steamID && steamID !== '0') {
-    fetchSteam(steamID, function(xml) {
-      var avatarM = xml.match(/<avatarFull>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/avatarFull>/);
-      var nameM   = xml.match(/<steamID>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/steamID>/);
-      if (avatarM && avatarM[1]) updateAvatar(avatarM[1]);
-      if (nameM   && nameM[1])   document.getElementById('js-player-name').textContent = nameM[1];
+    fetchSteam(steamID, function(avatarUrl, steamName) {
+      if (avatarUrl) updateAvatar(avatarUrl);
+      if (steamName) document.getElementById('js-player-name').textContent = steamName;
     });
   }
 }

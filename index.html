@@ -831,9 +831,13 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
   if (steamID && steamID !== '0') {
     fetchSteam(steamID, function(avatar, name) {
       if (avatar) {
-        // Aggiorna l'avatar del giocatore
-        var pImg = document.getElementById('js-player-avatar');
-        if (pImg) pImg.src = avatar;
+        // CORREZIONE QUI: l'ID deve essere 'player-avatar-img'
+        var pImg = document.getElementById('player-avatar-img');
+        if (pImg) {
+          pImg.src = avatar;
+          pImg.style.display = 'block'; // Mostra l'immagine
+          document.getElementById('player-avatar-letter').style.display = 'none'; // Nasconde il '?'
+        }
       }
       if (name) {
         document.getElementById('js-player-name').textContent = name;

@@ -768,32 +768,31 @@ var _playerNames = [];
 function buildSlots(current, max) {
   var wrap = document.getElementById('slots-visual');
   if (!wrap) return;
-  wrap.innerHTML = '';
+  wrap.innerHTML = ''; // Pulisce i vecchi quadratini
   
   for (var i = 0; i < max; i++) {
     var s = document.createElement('div');
-    // Se l'indice è minore del numero di giocatori attuali, il quadratino si illumina
+    // Se l'indice è minore dei giocatori attuali, aggiunge la classe 'filled' (acceso)
     s.className = 'player-slot ' + (i < current ? 'filled' : 'empty');
     wrap.appendChild(s);
   }
   
-  // Aggiorna i testi del conteggio in tutti i pannelli
+  // Aggiorna anche i numeri testuali (es: 5 / 32)
   document.getElementById('js-current').textContent = current;
   document.getElementById('js-max').textContent = max;
-  document.getElementById('js-wb-current').textContent = current;
-  document.getElementById('js-wb-max').textContent = max;
 }
 var _playerNames = []; // Array che contiene i nomi
 
 function buildPlayers() {
   var list = document.getElementById('players-list');
   if (!list) return;
-  list.innerHTML = '';
   
-  // Cicla l'array e crea una riga per ogni nome
+  list.innerHTML = ''; // Svuota la lista per ridisegnarla
+  
   _playerNames.forEach(function(name) {
     var row = document.createElement('div');
     row.className = 'player-entry';
+    // Crea il pallino rosso e il nome
     row.innerHTML = '<div class="player-dot"></div><div class="player-nick">' + name + '</div>';
     list.appendChild(row);
   });
@@ -969,19 +968,24 @@ function DownloadingFile(fileName) {
 }
 
 function PlayerConnect(name) {
-  _currentPlayers++;
+  // Se il nome è valido e non è già in lista, lo aggiungiamo
   if (name && name !== "unconnected") {
-    _playerNames.push(name);
+    if (_playerNames.indexOf(name) === -1) {
+      _playerNames.push(name);
+      _currentPlayers = _playerNames.length; // Aggiorna il numero attuale
+    }
   }
+  
+  // Aggiorna la grafica
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();
 }
 
 function PlayerDisconnect(name) {
-  _currentPlayers = Math.max(0, _currentPlayers - 1);
-  var idx = _playerNames.indexOf(name);
-  if (idx > -1) {
-    _playerNames.splice(idx, 1);
+  var index = _playerNames.indexOf(name);
+  if (index > -1) {
+    _playerNames.splice(index, 1);
+    _currentPlayers = _playerNames.length;
   }
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();

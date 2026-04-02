@@ -5,13 +5,41 @@
 <title>TTT2 — Caricamento</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 <style>
-#slots-count {
+#welcome-right-mod .welcome-badge:nth-child(1),
+#welcome-right-mod .welcome-sep:nth-child(2) {
   display: none !important;
 }
 
-/* Nasconde il badge Online/Slots in alto a destra */
-#welcome-right-mod {
-  display: none !important;
+#char-model {
+    position: fixed;      /* Importante: lo blocca rispetto alla finestra */
+    right: -45px;             /* Lo attacca a destra */
+    bottom: 90px;
+            /* Lo poggia sul fondo */
+    width: 450px;         /* Prova con questa larghezza */
+    height: 180vh;         /* Quasi tutta l'altezza */
+    
+    background-image: url('img/enforcer.webp');
+    background-repeat: no-repeat;
+    background-position: bottom right;
+    background-size: contain;
+
+    filter: drop-shadow(0 0 10px rgba(192,57,43,0.6));
+    
+    /* Leggera animazione di "respiro" come gli altri elementi */
+    animation: image-glow-pulse 13s ease-in-out infinite alternate;
+
+    z-index: 5;
+    pointer-events: none;
+    
+    /* Maschera per evitare che i piedi "taglino" troppo nettamente sul fondo */
+    mask-image: linear-gradient(to top, rgba(0,0,0,0.9) 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.9) 90%, transparent 100%);
+    
+    z-index: 9999;        /* Valore altissimo per essere sicuro che stia SOPRA tutto */
+    pointer-events: none; /* Così puoi cliccare i tasti dietro di lui */
+    
+    /* Se ancora non lo vedi, aggiungi questo bordo per capire dove si trova il riquadro */
+    /* border: 2px solid red; */ 
 }
 :root {
   --red:      #c0392b;
@@ -623,20 +651,7 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
   </div>
 
   <div id="col-right">
-
-    <div class="panel" id="slots-panel">
-      <div class="panel-title">Slot Giocatori</div>
-      <div id="slots-body">
-        <div id="slots-visual"></div>
-        <div id="slots-count"><span id="js-current">0</span> / <span id="js-max">32</span> giocatori in arrivo!</div>
-      </div>
-    </div>
-
-    <div class="panel" id="players-panel">
-      <div class="panel-title">In connessione...</div>
-      <div id="players-list"></div>
-    </div>
-
+    <div id="char-model"></div>
   </div>
 
   <div id="footer">
@@ -1044,5 +1059,6 @@ window.onload = function() {
     document.getElementById('js-wb-current').textContent = _currentPlayers;
 };
 </script>
+<div id="char-model"></div> </body>
 </body>
 </html>

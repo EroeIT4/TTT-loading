@@ -1028,12 +1028,29 @@ function SetFilesNeeded(needed) {
     setBar(Math.min(100, Math.max(0, pct)));
   }
 }
+function fadeOutMusic(duration) {
+    duration = duration || 2000; // ms — default 2 secondi
+    var startVolume = bgAudio.volume;
+    var steps = 40;
+    var interval = duration / steps;
+    var decrement = startVolume / steps;
 
+    var fade = setInterval(function() {
+        if (bgAudio.volume > decrement) {
+            bgAudio.volume -= decrement;
+        } else {
+            bgAudio.volume = 0;
+            bgAudio.pause();
+            clearInterval(fade);
+        }
+    }, interval);
+}
 function SetStatusChanged(status) {
   if (status) document.getElementById('status-text').textContent = status;
   // Se GMod dice che ha finito di scaricare, manda la barra al 100%
   if (status === 'Workshop Complete' || status === 'Sending client info...') {
     setBar(100);
+    fadeOutMusic(1000);
   }
 }
 

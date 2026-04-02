@@ -876,7 +876,8 @@ var _barFallback = setInterval(function() {
 
 // ── FUNZIONI CHIAMATE DA GMOD ─────────────────────────────────────────────────
 function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDescription, gameDir) {
-_maxPlayers = parseInt(maxPlayers) || 32;
+  var incomingMax = parseInt(maxPlayers) || 32;
+  if (incomingMax > 1) { _maxPlayers = incomingMax; }
   document.getElementById('js-server-name').textContent = serverName || 'TTT2 Server Italia';
   
   // Aggiorna i testi del badge in alto (Online / Slots)
@@ -991,6 +992,9 @@ function PlayerConnect(name) {
   // Forza l'aggiornamento visivo di quadratini e lista nomi
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();
+
+  var badgeCurrent = document.getElementById('js-wb-current');
+  if (badgeCurrent) badgeCurrent.textContent = _currentPlayers;
 }
 
 function PlayerDisconnect(name) {

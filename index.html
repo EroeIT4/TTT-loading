@@ -5,6 +5,13 @@
 <title>TTT2 — Caricamento</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 <style>
+.map-stats .stat-item:last-child {
+  display: none;
+}
+/* Opzionale: se vuoi nascondere anche il numero nel badge in alto a destra */
+.status-badge {
+  display: none;
+}
 :root {
   --red:      #c0392b;
   --red-glow: #e74c3c;
@@ -606,12 +613,12 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
       <div class="panel-title">Slot Giocatori</div>
       <div id="slots-body">
         <div id="slots-visual"></div>
-        <div id="slots-count"><span id="js-current">0</span> / <span id="js-max">32</span> giocatori connessi</div>
+        <div id="slots-count"><span id="js-current">0</span> / <span id="js-max">32</span> giocatori in arrivo!</div>
       </div>
     </div>
 
     <div class="panel" id="players-panel">
-      <div class="panel-title">Giocatori in Partita</div>
+      <div class="panel-title">In connessione...</div>
       <div id="players-list"></div>
     </div>
 
@@ -981,27 +988,19 @@ function DownloadingFile(fileName) {
 }
 
 function PlayerConnect(name) {
-  // Pulizia del nome e controllo duplicati
-  if (name && name !== "unconnected" && name.length > 0) {
-    if (_playerNames.indexOf(name) === -1) {
-      _playerNames.push(name);
-    }
+  // Filtriamo i nomi inutili
+  if (!name || name === "unconnected" || name === "") return;
+
+  // Aggiungiamo alla lista solo se non c'è già
+  if (_playerNames.indexOf(name) === -1) {
+    _playerNames.push(name);
   }
 
-  // Il numero di giocatori DEVE basarsi sulla lunghezza dell'array nomi
+  // Accendiamo i quadratini in base a quanti ne stanno entrando
   _currentPlayers = _playerNames.length;
-
-  // Aggiorna la UI solo se gli elementi esistono già (controllo sicurezza)
-  if (document.getElementById('slots-visual')) {
-    buildSlots(_currentPlayers, _maxPlayers);
-  }
-  if (document.getElementById('players-list')) {
-    buildPlayers();
-  }
-
-  // Aggiorna tutti i contatori numerici ovunque siano
-  if (document.getElementById('js-current')) document.getElementById('js-current').textContent = _currentPlayers;
-  if (document.getElementById('js-wb-current')) document.getElementById('js-wb-current').textContent = _currentPlayers;
+  
+  buildSlots(_currentPlayers, _maxPlayers);
+  buildPlayers();
 }
 
 function PlayerDisconnect(name) {

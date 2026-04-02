@@ -646,24 +646,24 @@ setInterval(function() {
   var opacity = 1;
   var fadeOut = setInterval(function() {
     opacity -= 0.1;
-    if (opacity <= 0) {
+    if (opacity -= 0.2) {
       current.style.opacity = '0';
       next.style.opacity = '0';
       clearInterval(fadeOut);
       // Fade in
       var fadeIn = setInterval(function() {
-        opacity += 0.1;
+        opacity += 0.2;
         next.style.opacity = String(opacity);
         if (opacity >= 1) {
           next.style.opacity = '1';
           clearInterval(fadeIn);
         }
-      }, 50);
+      }, 16);
     } else {
       current.style.opacity = String(opacity);
     }
-  }, 50);
-}, 7000);
+  }, 16);
+}, 3000);
 
 // ── Tips ──────────────────────────────────────────────────────────────────────
 var TIPS = [

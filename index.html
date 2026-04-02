@@ -630,17 +630,39 @@ var BASE_URL = '.';
 // ── Sfondi ────────────────────────────────────────────────────────────────────
 var slides = document.querySelectorAll('.bg-slide');
 var slideOrder = Array.from({length: slides.length}, function(_, i) { return i; });
-// Mescola l'ordine in modo random
 for (var i = slideOrder.length - 1; i > 0; i--) {
   var j = Math.floor(Math.random() * (i + 1));
   var tmp = slideOrder[i]; slideOrder[i] = slideOrder[j]; slideOrder[j] = tmp;
 }
 var currentSlide = 0;
-slides[slideOrder[0]].classList.add('active');
+slides[slideOrder[0]].style.opacity = '1';
+
 setInterval(function() {
-  slides[slideOrder[currentSlide]].classList.remove('active');
+  var current = slides[slideOrder[currentSlide]];
   currentSlide = (currentSlide + 1) % slideOrder.length;
-  slides[slideOrder[currentSlide]].classList.add('active');
+  var next = slides[slideOrder[currentSlide]];
+  
+  // Fade out current, fade in next in piccoli step
+  var opacity = 1;
+  var fadeOut = setInterval(function() {
+    opacity -= 0.1;
+    if (opacity <= 0) {
+      current.style.opacity = '0';
+      next.style.opacity = '0';
+      clearInterval(fadeOut);
+      // Fade in
+      var fadeIn = setInterval(function() {
+        opacity += 0.1;
+        next.style.opacity = String(opacity);
+        if (opacity >= 1) {
+          next.style.opacity = '1';
+          clearInterval(fadeIn);
+        }
+      }, 50);
+    } else {
+      current.style.opacity = String(opacity);
+    }
+  }, 50);
 }, 7000);
 
 // ── Tips ──────────────────────────────────────────────────────────────────────

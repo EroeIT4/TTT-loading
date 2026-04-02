@@ -647,8 +647,12 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
 var _maxPlayers = 32;
 var _currentPlayers = 0;
 var _playerNames = [];
-// --- CARICAMENTO DATABASE MAPPE ---
+var _filesTotal = 0;
+var _filesNeeded = 0;
 var mapThumbnails = {};
+var BASE_URL = '.';
+// --- CARICAMENTO DATABASE MAPPE ---
+
 fetch('maps.json')
   .then(function(response) { return response.json(); })
   .then(function(data) { 
@@ -656,8 +660,6 @@ fetch('maps.json')
     console.log("Database mappe caricato");
   })
   .catch(function(err) { console.error("Errore caricamento maps.json", err); });
-
-var BASE_URL = '.';
 
 // ── Sfondi ────────────────────────────────────────────────────────────────────
 var slides = document.querySelectorAll('.bg-slide');
@@ -786,7 +788,7 @@ function buildSlots(current, max) {
   document.getElementById('js-current').textContent = current;
   document.getElementById('js-max').textContent = max;
 }
-var _playerNames = []; // Array che contiene i nomi
+ // Array che contiene i nomi
 
 function buildPlayers() {
   var list = document.getElementById('players-list');
@@ -857,7 +859,7 @@ function updateDots() {
 setInterval(function() { updateClock(); updateDots(); }, 250);
 
 // ── Barra ────────────────────────────────────────────────────────────────────
-var _filesNeeded = 0;
+
 var _filesDownloaded = 0;
 
 function setBar(pct) {
@@ -947,8 +949,6 @@ function SetMapName(mapName) {
     mapImg.style.filter = "brightness(0.8)"; // Fallback più scuro per le icone stock
   }
 }
-var _filesTotal = 0;
-var _filesNeeded = 0;
 
 function SetFilesTotal(total) {
   _filesTotal = parseInt(total) || 0;

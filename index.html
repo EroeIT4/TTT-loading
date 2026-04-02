@@ -378,11 +378,12 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
   transition:all 0.3s ease;
 }
 .player-slot.filled { 
-  background: rgba(192,57,43,0.5) !important; 
+  background: rgba(192, 57, 43, 0.8) !important; 
   border-color: var(--red-glow) !important; 
+  box-shadow: 0 0 8px var(--red-glow);
 }
 .player-slot.filled::after { 
-  background: var(--red-glow) !important; 
+  background: #fff !important; 
   opacity: 1 !important;
 }
 .player-slot.empty::after  { content:''; width:4px; height:4px; background:var(--muted); border-radius:50%; opacity:0.4; }
@@ -878,6 +879,9 @@ var _barFallback = setInterval(function() {
 function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDescription, gameDir) {
   var incomingMax = parseInt(maxPlayers) || 32;
   if (incomingMax > 1) { _maxPlayers = incomingMax; }
+
+  _currentPlayers = _playerNames.length;
+  
   document.getElementById('js-server-name').textContent = serverName || 'TTT2 Server Italia';
   
   // Aggiorna i testi del badge in alto (Online / Slots)
@@ -978,28 +982,27 @@ function DownloadingFile(fileName) {
 }
 
 function PlayerConnect(name) {
-  // GMod chiama questa funzione per ogni player già nel server + quelli che entrano
+  // Pulizia del nome e controllo duplicati
   if (name && name !== "unconnected" && name.length > 0) {
     if (_playerNames.indexOf(name) === -1) {
       _playerNames.push(name);
     }
   }
 
-  // Sincronizza sempre il contatore con la lista reale dei nomi
+  // Il numero di giocatori DEVE basarsi sulla lunghezza dell'array nomi
   _currentPlayers = _playerNames.length;
 
-  // Aggiorna tutta la UI
-  buildSlots(_currentPlayers, _maxPlayers);
-  buildPlayers();
+  // Aggiorna la UI solo se gli elementi esistono già (controllo sicurezza)
+  if (document.getElementById('slots-visual')) {
+    buildSlots(_currentPlayers, _maxPlayers);
+  }
+  if (document.getElementById('players-list')) {
+    buildPlayers();
+  }
 
-  // Aggiorna i badge numerici
-  if (document.getElementById('js-current')) {
-    document.getElementById('js-current').textContent = _currentPlayers;
-  }
-  var badgeCurrent = document.getElementById('js-wb-current');
-  if (badgeCurrent) {
-    badgeCurrent.textContent = _currentPlayers;
-  }
+  // Aggiorna tutti i contatori numerici ovunque siano
+  if (document.getElementById('js-current')) document.getElementById('js-current').textContent = _currentPlayers;
+  if (document.getElementById('js-wb-current')) document.getElementById('js-wb-current').textContent = _currentPlayers;
 }
 
 function PlayerDisconnect(name) {

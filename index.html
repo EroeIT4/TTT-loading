@@ -377,8 +377,13 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
   display:flex; align-items:center; justify-content:center;
   transition:all 0.3s ease;
 }
-.player-slot.filled { background:rgba(192,57,43,0.2); border-color:var(--red-glow); }
-.player-slot.filled::after { content:''; width:6px; height:6px; background:var(--red-glow); border-radius:50%; box-shadow:0 0 5px var(--red-glow); }
+.player-slot.filled { 
+  background: rgba(192,57,43,0.6) !important; 
+  border-color: var(--red-glow) !important; 
+}
+.player-slot.filled::after { 
+  background: var(--red-glow) !important; 
+}
 .player-slot.empty::after  { content:''; width:4px; height:4px; background:var(--muted); border-radius:50%; opacity:0.4; }
 #slots-count { font-family:var(--mono); font-size:14px; color:var(--text); text-align:center; letter-spacing:2px; margin-top: 10px;}
 #slots-count span { color:var(--red-glow); }
@@ -638,6 +643,9 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
 <audio id="bg-audio" preload="auto"></audio>
 
 <script>
+var _maxPlayers = 32;
+var _currentPlayers = 0;
+var _playerNames = [];
 // --- CARICAMENTO DATABASE MAPPE ---
 var mapThumbnails = {};
 fetch('maps.json')
@@ -761,10 +769,6 @@ function updateAvatar(url) {
   }
 }
 
-var _maxPlayers = 32;
-var _currentPlayers = 0;
-var _playerNames = [];
-
 function buildSlots(current, max) {
   var wrap = document.getElementById('slots-visual');
   if (!wrap) return;
@@ -878,6 +882,9 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
     _maxPlayers = incomingMax;
   }
   document.getElementById('js-server-name').textContent = serverName || 'TTT2 Server Italia';
+
+  buildSlots(_currentPlayers, _maxPlayers);
+  buildPlayers();
 // Imposta il nome della mappa nel testo
   var mapDisplay = document.getElementById('map-name');
   mapDisplay.textContent = mapName || 'N/A';
@@ -968,15 +975,16 @@ function DownloadingFile(fileName) {
 }
 
 function PlayerConnect(name) {
-  // Se il nome è valido e non è già in lista, lo aggiungiamo
-  if (name && name !== "unconnected") {
+  _currentPlayers++; // Incrementa sempre il contatore per i quadratini
+
+  // Aggiungi alla lista nomi solo se il nome è reale
+  if (name && name !== "unconnected" && name !== "") {
     if (_playerNames.indexOf(name) === -1) {
       _playerNames.push(name);
-      _currentPlayers = _playerNames.length; // Aggiorna il numero attuale
     }
   }
   
-  // Aggiorna la grafica
+  // Aggiorna sempre sia i quadratini che la lista
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();
 }

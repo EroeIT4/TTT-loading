@@ -256,7 +256,8 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
   font-family:var(--display); font-size:22px; color:var(--red-glow);
 }
 #welcome-greet {
-  font-family:var(--display); font-size:22px; /* AUMENTATO da 18px */ 
+  font-family:var(--display); font-size: clamp(14px, 1.8vw, 22px); /* AUMENTATO da 18px */ 
+
   color:#fff; letter-spacing:2px;
   white-space: nowrap;
   overflow: hidden;

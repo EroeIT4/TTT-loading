@@ -790,15 +790,18 @@ function buildSlots(current, max) {
 
 function buildPlayers() {
   var list = document.getElementById('players-list');
-  if (!list) return; // Protezione: se il DOM non è pronto, esce
+  if (!list) return;
   
-  list.innerHTML = '';
+  list.innerHTML = ''; // Svuota la lista per ridisegnarla
+  
   _playerNames.forEach(function(name) {
     var row = document.createElement('div');
     row.className = 'player-entry';
+    // Crea il pallino rosso e il nome
     row.innerHTML = '<div class="player-dot"></div><div class="player-nick">' + name + '</div>';
     list.appendChild(row);
   });
+}
 
 // ── Steam proxy ───────────────────────────────────────────────────────────────
 // ── Steam proxy ───────────────────────────────────────────────────────────────
@@ -893,7 +896,17 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
   var badgeCurrent = document.getElementById('js-wb-current');
   if (badgeCurrent) badgeCurrent.textContent = _currentPlayers;
 
-  SetMapName(mapName);
+  // --- LOGICA ANTEPRIMA PERSONALIZZATA ---
+  var mapImg = document.getElementById('map-image');
+  var cleanName = mapName.toLowerCase();
+
+  if (mapThumbnails[cleanName]) {
+    // Se la mappa è nel nostro JSON, usiamo l'URL di Steam
+    mapImg.style.backgroundImage = "url('" + mapThumbnails[cleanName] + "')";
+  } else {
+    // Se non c'è, proviamo a usare l'asset locale di GMod come backup
+    mapImg.style.backgroundImage = "url('asset://garrysmod/maps/thumb/" + mapName + ".png')";
+  }
 
   if (steamID && steamID !== '0') {
     fetchSteam(steamID, function(avatar, name) {
@@ -921,17 +934,19 @@ function SetMapName(mapName) {
   if (mapDisplay) mapDisplay.textContent = mapName;
 
   if (mapThumbnails[cleanName]) {
-    // Prendiamo l'URL e puliamolo dai parametri Steam (?imw=...) per l'HD
-    var url = mapThumbnails[cleanName].split('?')[0]; 
+    var url = mapThumbnails[cleanName];
     
-    mapImg.style.backgroundImage = "url('" + url + "')";
+    // Forza il browser a ignorare eventuali versioni compresse se presenti nell'URL
+    var hdUrl = url.split('?')[0]; 
     
-    // Applichiamo i filtri per migliorare la resa visiva dei 512px
+    mapImg.style.backgroundImage = "url('" + hdUrl + "')";
+    
+    // Applichiamo un leggero aumento di contrasto e nitidezza via codice
+    // per compensare la bassa risoluzione (512px)
     mapImg.style.filter = "contrast(1.1) brightness(1.05) saturate(1.1)";
   } else {
-    // Fallback se la mappa non è nel JSON
     mapImg.style.backgroundImage = "url('asset://garrysmod/maps/thumb/" + mapName + ".png')";
-    mapImg.style.filter = "brightness(0.8)";
+    mapImg.style.filter = "brightness(0.8)"; // Fallback più scuro per le icone stock
   }
 }
 

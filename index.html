@@ -13,10 +13,12 @@
 #char-model {
     position: fixed;      /* Importante: lo blocca rispetto alla finestra */
     right: -45px;             /* Lo attacca a destra */
-    bottom: 90px;
+    bottom: 38px;
             /* Lo poggia sul fondo */
     width: 450px;         /* Prova con questa larghezza */
     height: 180vh;         /* Quasi tutta l'altezza */
+
+
     
     background-image: url('./img/Enforcer.webp');
     background-repeat: no-repeat;
@@ -26,7 +28,7 @@
     filter: drop-shadow(0 0 10px rgba(192,57,43,0.6));
     
     /* Leggera animazione di "respiro" come gli altri elementi */
-    animation: image-glow-pulse 13s ease-in-out infinite alternate;
+    
 
     z-index: 5;
     pointer-events: none;
@@ -41,6 +43,7 @@
     /* Se ancora non lo vedi, aggiungi questo bordo per capire dove si trova il riquadro */
     /* border: 2px solid red; */ 
 }
+
 :root {
   --red:      #c0392b;
   --red-glow: #e74c3c;

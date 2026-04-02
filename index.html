@@ -757,29 +757,36 @@ var _playerNames = [];
 
 function buildSlots(current, max) {
   var wrap = document.getElementById('slots-visual');
+  if (!wrap) return;
   wrap.innerHTML = '';
+  
   for (var i = 0; i < max; i++) {
     var s = document.createElement('div');
+    // Se l'indice è minore del numero di giocatori attuali, il quadratino si illumina
     s.className = 'player-slot ' + (i < current ? 'filled' : 'empty');
     wrap.appendChild(s);
   }
-  document.getElementById('js-current').textContent    = current;
-  document.getElementById('js-max').textContent        = max;
+  
+  // Aggiorna i testi del conteggio in tutti i pannelli
+  document.getElementById('js-current').textContent = current;
+  document.getElementById('js-max').textContent = max;
   document.getElementById('js-wb-current').textContent = current;
-  document.getElementById('js-wb-max').textContent     = max;
+  document.getElementById('js-wb-max').textContent = max;
 }
-buildSlots(0, _maxPlayers);
+var _playerNames = []; // Array che contiene i nomi
 
 function buildPlayers() {
   var list = document.getElementById('players-list');
+  if (!list) return;
   list.innerHTML = '';
-  for (var i = 0; i < _playerNames.length; i++) {
-    if (!_playerNames[i]) continue;
+  
+  // Cicla l'array e crea una riga per ogni nome
+  _playerNames.forEach(function(name) {
     var row = document.createElement('div');
     row.className = 'player-entry';
-    row.innerHTML = '<div class="player-dot"></div><div class="player-nick">' + _playerNames[i] + '</div>';
+    row.innerHTML = '<div class="player-dot"></div><div class="player-nick">' + name + '</div>';
     list.appendChild(row);
-  }
+  });
 }
 
 // ── Steam proxy ───────────────────────────────────────────────────────────────
@@ -941,17 +948,21 @@ function DownloadingFile(fileName) {
   document.getElementById('status-text').textContent = 'Download: ' + fileName;
 }
 
-function PlayerConnect(name, userid) {
+function PlayerConnect(name) {
   _currentPlayers++;
-  if (name) _playerNames.push(name);
+  if (name && name !== "unconnected") {
+    _playerNames.push(name);
+  }
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();
 }
 
-function PlayerDisconnect(name, userid) {
+function PlayerDisconnect(name) {
   _currentPlayers = Math.max(0, _currentPlayers - 1);
   var idx = _playerNames.indexOf(name);
-  if (idx > -1) _playerNames.splice(idx, 1);
+  if (idx > -1) {
+    _playerNames.splice(idx, 1);
+  }
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();
 }

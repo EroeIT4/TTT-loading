@@ -5,12 +5,13 @@
 <title>TTT2 — Caricamento</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 <style>
-.map-stats .stat-item:last-child {
-  display: none;
+#slots-count {
+  display: none !important;
 }
-/* Opzionale: se vuoi nascondere anche il numero nel badge in alto a destra */
-.status-badge {
-  display: none;
+
+/* Nasconde il badge Online/Slots in alto a destra */
+#welcome-right-mod {
+  display: none !important;
 }
 :root {
   --red:      #c0392b;
@@ -1004,21 +1005,17 @@ function DownloadingFile(fileName) {
 }
 
 function PlayerConnect(name) {
-  if (name && name !== "unconnected" && name.length > 0) {
-    if (_playerNames.indexOf(name) === -1) {
-      _playerNames.push(name);
-    }
+  if (!name || name === "unconnected" || name === "") return;
+
+  // Aggiunge alla lista se non presente
+  if (_playerNames.indexOf(name) === -1) {
+    _playerNames.push(name);
   }
 
+  // Aggiorna solo la parte visiva (quadratini e lista nomi)
   _currentPlayers = _playerNames.length;
-
-  // Aggiorna quadratini e lista
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();
-
-  // Aggiorna i numeri (sia sotto i quadratini che nel badge in alto)
-  if (document.getElementById('js-current')) document.getElementById('js-current').textContent = _currentPlayers;
-  if (document.getElementById('js-wb-current')) document.getElementById('js-wb-current').textContent = _currentPlayers;
 }
 
 function PlayerDisconnect(name) {

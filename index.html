@@ -227,6 +227,10 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
 #welcome-greet {
   font-family:var(--display); font-size:22px; /* AUMENTATO da 18px */ 
   color:#fff; letter-spacing:2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 400px;
 }
 #welcome-greet span { color:var(--red-glow); text-shadow:0 0 10px rgba(231,76,60,0.5); }
 #welcome-steamid {

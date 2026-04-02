@@ -775,7 +775,7 @@ function updateAvatar(url) {
 
 function buildSlots(current, max) {
   var wrap = document.getElementById('slots-visual');
-  if (!wrap) return; // Protezione: se il DOM non è pronto, esce senza errori
+  if (!wrap) return; // Se il caricamento non è finito, esce senza rompere lo script
   
   wrap.innerHTML = '';
   for (var i = 0; i < max; i++) {
@@ -784,21 +784,20 @@ function buildSlots(current, max) {
     wrap.appendChild(s);
   }
   
-  if(document.getElementById('js-current')) document.getElementById('js-current').textContent = current;
-  if(document.getElementById('js-max')) document.getElementById('js-max').textContent = max;
+  var curEl = document.getElementById('js-current');
+  var maxEl = document.getElementById('js-max');
+  if(curEl) curEl.textContent = current;
+  if(maxEl) maxEl.textContent = max;
 }
- // Array che contiene i nomi
 
 function buildPlayers() {
   var list = document.getElementById('players-list');
-  if (!list) return;
+  if (!list) return; // Protezione per caricamento asincrono
   
-  list.innerHTML = ''; // Svuota la lista per ridisegnarla
-  
+  list.innerHTML = ''; 
   _playerNames.forEach(function(name) {
     var row = document.createElement('div');
     row.className = 'player-entry';
-    // Crea il pallino rosso e il nome
     row.innerHTML = '<div class="player-dot"></div><div class="player-nick">' + name + '</div>';
     list.appendChild(row);
   });
@@ -881,7 +880,7 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
   if (incomingMax > 1) { _maxPlayers = incomingMax; }
 
   _currentPlayers = _playerNames.length;
-  
+
   document.getElementById('js-server-name').textContent = serverName || 'TTT2 Server Italia';
   
   // Aggiorna i testi del badge in alto (Online / Slots)
@@ -1023,6 +1022,13 @@ function PlayerDisconnect(name) {
     badgeCurrent.textContent = _currentPlayers;
   }
 }
+window.onload = function() {
+  _currentPlayers = _playerNames.length;
+  buildSlots(_currentPlayers, _maxPlayers);
+  buildPlayers();
+  if(document.getElementById('js-wb-current')) 
+    document.getElementById('js-wb-current').textContent = _currentPlayers;
+};
 </script>
 </body>
 </html>

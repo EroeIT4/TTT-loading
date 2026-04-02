@@ -873,7 +873,7 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
     // Se non c'è, proviamo a usare l'asset locale di GMod come backup
     mapImg.style.backgroundImage = "url('asset://garrysmod/maps/thumb/" + mapName + ".png')";
   }
-  document.getElementById('map-image').style.backgroundImage = "url('asset://garrysmod/maps/thumb/" + mapName + ".png')";
+
   buildSlots(_currentPlayers, _maxPlayers);
 
   if (steamID && steamID !== '0') {

@@ -380,26 +380,31 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
 #slots-body { padding:7px 12px; }
 #slots-visual { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:7px; max-height: 112px; overflow: hidden}
 .player-slot {
-  width:24px; height:24px; border:1px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  transition:all 0.3s ease;
-}
-/* Slot pieno: Bordo rosso e sfondo leggermente colorato */
-.player-slot.filled {
-  border-color: #c0392b !important;
-  background: rgba(192, 57, 43, 0.2) !important;
-  box-shadow: 0 0 5px rgba(192, 57, 43, 0.4); /* Bagliore soffuso esterno */
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(192, 57, 43, 0.2); /* Bordo molto sottile e scuro */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 
-/* Il punto rosso centrale: Solo rosso, senza luce bianca */
+/* Slot PIENO (Rosso Tattico) */
+.player-slot.filled {
+  border-color: #c0392b !important; /* Rosso scuro per il bordo */
+  background: rgba(192, 57, 43, 0.15) !important;
+}
+
+/* Il puntino rosso centrale (Pieno) */
 .player-slot.filled::after {
   content: '';
   width: 8px;
   height: 8px;
-  background: #e74c3c !important; /* Rosso vivido dell'immagine */
+  background: #e74c3c !important; /* Rosso vivo ma solido */
   border-radius: 50%;
-  /* Bagliore circolare rosso intenso intorno al punto */
-  box-shadow: 0 0 6px #c0392b, 0 0 2px #7b241c; 
+  /* Bagliore solo rosso, senza bianco */
+  box-shadow: 0 0 8px #c0392b, 0 0 2px #7b241c; 
   opacity: 1 !important;
 }
 .player-slot.empty::after  { content:''; width:4px; height:4px; background:var(--muted); border-radius:50%; opacity:0.4; }
@@ -942,6 +947,7 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
       }
       if (name) {
         document.getElementById('js-player-name').textContent = name;
+        PlayerConnect(name); // Questo forzerà la comparsa del tuo nome e del quadratino
       }
     });
   }

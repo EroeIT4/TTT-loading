@@ -446,6 +446,7 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
 #extra-image-container {
   grid-column: 1;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 20px 0;
@@ -466,7 +467,16 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
 
 
 }
-
+#clan-credit {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-align: center;
+    text-transform: uppercase;
+    margin-top: 6px;
+    opacity: 0.7;
+}
 @keyframes image-glow-pulse {
   from { filter: drop-shadow(0 0 8px rgba(192,57,43,0.4)); transform: scale(1); }
   to { filter: drop-shadow(0 0 15px rgba(192,57,43,0.8)); transform: scale(1.02); }
@@ -622,6 +632,7 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
     </div>
     <div id="extra-image-container">
       <img id="custom-detective-style" src="img/it4.jpg" alt="Decorazione">
+      <div id="clan-credit">Powered by IT4 Clan</div>
     </div>
 
   </div>
@@ -770,9 +781,12 @@ setInterval(nextTip, 6000);
 
 // ── Musica ────────────────────────────────────────────────────────────────────
 var TRACKS = [
-  { title: 'MW2 — Spec Ops Theme', src: BASE_URL + '/music/mw2_specops.mp3' },
+  { title: 'Modern Warfare 2 — Spec Ops Theme', src: BASE_URL + '/music/mw2_specops.mp3' },
   { title: 'Men of War — Loading',  src: BASE_URL + '/music/mow_loading.mp3' },
-  { title: 'UT99 — Go Down',        src: BASE_URL + '/music/ut99_godown.mp3' }
+  { title: 'Unreal Tournament — Go Down',        src: BASE_URL + '/music/ut99_godown.mp3' },
+  { title: 'Modern Warfare 2 — The Enemy of my Enemy',        src: BASE_URL + '/music/mw2_enemy.mp3' },
+  { title: 'Call of Duty 4 — Sins of the Father',        src: BASE_URL + '/music/cod4_sins.mp3' },
+  { title: 'Call of Duty 4 — Sins of the Father',        src: BASE_URL + '/music/cod4_sins.mp3' }
 ];
 var bgAudio = document.getElementById('bg-audio');
 var trackIndex = Math.floor(Math.random() * TRACKS.length);

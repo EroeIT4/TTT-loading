@@ -311,7 +311,6 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
   font-family:var(--body); font-size:18px; /* AUMENTATO da 14px */ 
   color:#ffffff;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-  transition:opacity 0.5s ease; line-height:1.3;
 }
 #tips-text.fading { opacity:0; }
 
@@ -769,12 +768,8 @@ var TIPS = [
 var tipIndex = Math.floor(Math.random() * TIPS.length);
 var tipEl = document.getElementById('tips-text');
 function nextTip() {
-  tipEl.classList.add('fading');
-  setTimeout(function() {
     tipIndex = (tipIndex + 1) % TIPS.length;
     tipEl.textContent = TIPS[tipIndex];
-    tipEl.classList.remove('fading');
-  }, 500);
 }
 tipEl.textContent = TIPS[tipIndex];
 setInterval(nextTip, 6000);

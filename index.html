@@ -883,6 +883,7 @@ var _barFallback = setInterval(function() {
 
 // ── FUNZIONI CHIAMATE DA GMOD ─────────────────────────────────────────────────
 function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDescription, gameDir) {
+  PlayerConnect("Connessione in corso...");
   var incomingMax = parseInt(maxPlayers) || 32;
   if (incomingMax > 1) { _maxPlayers = incomingMax; }
 

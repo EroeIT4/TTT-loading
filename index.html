@@ -774,36 +774,31 @@ function updateAvatar(url) {
 
 function buildSlots(current, max) {
   var wrap = document.getElementById('slots-visual');
-  if (!wrap) return;
-  wrap.innerHTML = ''; // Pulisce i vecchi quadratini
+  if (!wrap) return; // Protezione: se il DOM non è pronto, esce senza errori
   
+  wrap.innerHTML = '';
   for (var i = 0; i < max; i++) {
     var s = document.createElement('div');
-    // Se l'indice è minore dei giocatori attuali, aggiunge la classe 'filled' (acceso)
     s.className = 'player-slot ' + (i < current ? 'filled' : 'empty');
     wrap.appendChild(s);
   }
   
-  // Aggiorna anche i numeri testuali (es: 5 / 32)
-  document.getElementById('js-current').textContent = current;
-  document.getElementById('js-max').textContent = max;
+  if(document.getElementById('js-current')) document.getElementById('js-current').textContent = current;
+  if(document.getElementById('js-max')) document.getElementById('js-max').textContent = max;
 }
  // Array che contiene i nomi
 
 function buildPlayers() {
   var list = document.getElementById('players-list');
-  if (!list) return;
+  if (!list) return; // Protezione: se il DOM non è pronto, esce
   
-  list.innerHTML = ''; // Svuota la lista per ridisegnarla
-  
+  list.innerHTML = '';
   _playerNames.forEach(function(name) {
     var row = document.createElement('div');
     row.className = 'player-entry';
-    // Crea il pallino rosso e il nome
     row.innerHTML = '<div class="player-dot"></div><div class="player-nick">' + name + '</div>';
     list.appendChild(row);
   });
-}
 
 // ── Steam proxy ───────────────────────────────────────────────────────────────
 // ── Steam proxy ───────────────────────────────────────────────────────────────
@@ -891,22 +886,14 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
   if (mapDisplay) mapDisplay.textContent = mapName;
   
   // Richiama le funzioni grafiche
+  _currentPlayers = _playerNames.length; 
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();
 
-  // --- LOGICA ANTEPRIMA PERSONALIZZATA ---
-  var mapImg = document.getElementById('map-image');
-  var cleanName = mapName.toLowerCase();
+  var badgeCurrent = document.getElementById('js-wb-current');
+  if (badgeCurrent) badgeCurrent.textContent = _currentPlayers;
 
-  if (mapThumbnails[cleanName]) {
-    // Se la mappa è nel nostro JSON, usiamo l'URL di Steam
-    mapImg.style.backgroundImage = "url('" + mapThumbnails[cleanName] + "')";
-  } else {
-    // Se non c'è, proviamo a usare l'asset locale di GMod come backup
-    mapImg.style.backgroundImage = "url('asset://garrysmod/maps/thumb/" + mapName + ".png')";
-  }
-
-  buildSlots(_currentPlayers, _maxPlayers);
+  SetMapName(mapName);
 
   if (steamID && steamID !== '0') {
     fetchSteam(steamID, function(avatar, name) {
@@ -934,19 +921,17 @@ function SetMapName(mapName) {
   if (mapDisplay) mapDisplay.textContent = mapName;
 
   if (mapThumbnails[cleanName]) {
-    var url = mapThumbnails[cleanName];
+    // Prendiamo l'URL e puliamolo dai parametri Steam (?imw=...) per l'HD
+    var url = mapThumbnails[cleanName].split('?')[0]; 
     
-    // Forza il browser a ignorare eventuali versioni compresse se presenti nell'URL
-    var hdUrl = url.split('?')[0]; 
+    mapImg.style.backgroundImage = "url('" + url + "')";
     
-    mapImg.style.backgroundImage = "url('" + hdUrl + "')";
-    
-    // Applichiamo un leggero aumento di contrasto e nitidezza via codice
-    // per compensare la bassa risoluzione (512px)
+    // Applichiamo i filtri per migliorare la resa visiva dei 512px
     mapImg.style.filter = "contrast(1.1) brightness(1.05) saturate(1.1)";
   } else {
+    // Fallback se la mappa non è nel JSON
     mapImg.style.backgroundImage = "url('asset://garrysmod/maps/thumb/" + mapName + ".png')";
-    mapImg.style.filter = "brightness(0.8)"; // Fallback più scuro per le icone stock
+    mapImg.style.filter = "brightness(0.8)";
   }
 }
 
@@ -978,33 +963,47 @@ function DownloadingFile(fileName) {
 }
 
 function PlayerConnect(name) {
-  // Ignora i nomi non validi o 'unconnected'
+  // GMod chiama questa funzione per ogni player già nel server + quelli che entrano
   if (name && name !== "unconnected" && name.length > 0) {
-    // Aggiungi il nome solo se non è già presente (evita duplicati)
     if (_playerNames.indexOf(name) === -1) {
       _playerNames.push(name);
     }
   }
 
-  // Il numero di giocatori corretto è la lunghezza della nostra lista
+  // Sincronizza sempre il contatore con la lista reale dei nomi
   _currentPlayers = _playerNames.length;
 
-  // Forza l'aggiornamento visivo di quadratini e lista nomi
+  // Aggiorna tutta la UI
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();
 
+  // Aggiorna i badge numerici
+  if (document.getElementById('js-current')) {
+    document.getElementById('js-current').textContent = _currentPlayers;
+  }
   var badgeCurrent = document.getElementById('js-wb-current');
-  if (badgeCurrent) badgeCurrent.textContent = _currentPlayers;
+  if (badgeCurrent) {
+    badgeCurrent.textContent = _currentPlayers;
+  }
 }
 
 function PlayerDisconnect(name) {
   var index = _playerNames.indexOf(name);
   if (index > -1) {
     _playerNames.splice(index, 1);
-    _currentPlayers = _playerNames.length;
   }
+  _currentPlayers = _playerNames.length;
+  
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();
+  
+  if (document.getElementById('js-current')) {
+    document.getElementById('js-current').textContent = _currentPlayers;
+  }
+  var badgeCurrent = document.getElementById('js-wb-current');
+  if (badgeCurrent) {
+    badgeCurrent.textContent = _currentPlayers;
+  }
 }
 </script>
 </body>

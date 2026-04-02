@@ -378,11 +378,12 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
   transition:all 0.3s ease;
 }
 .player-slot.filled { 
-  background: rgba(192,57,43,0.6) !important; 
+  background: rgba(192,57,43,0.5) !important; 
   border-color: var(--red-glow) !important; 
 }
 .player-slot.filled::after { 
   background: var(--red-glow) !important; 
+  opacity: 1 !important;
 }
 .player-slot.empty::after  { content:''; width:4px; height:4px; background:var(--muted); border-radius:50%; opacity:0.4; }
 #slots-count { font-family:var(--mono); font-size:14px; color:var(--text); text-align:center; letter-spacing:2px; margin-top: 10px;}
@@ -875,19 +876,20 @@ var _barFallback = setInterval(function() {
 
 // ── FUNZIONI CHIAMATE DA GMOD ─────────────────────────────────────────────────
 function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDescription, gameDir) {
-  var incomingMax = parseInt(maxPlayers) || 32;
-  
-  // Se GMod dice "1 slot", lo ignoriamo per evitare il glitch visivo del listen server
-  if (incomingMax > 1) {
-    _maxPlayers = incomingMax;
-  }
+_maxPlayers = parseInt(maxPlayers) || 32;
   document.getElementById('js-server-name').textContent = serverName || 'TTT2 Server Italia';
+  
+  // Aggiorna i testi del badge in alto (Online / Slots)
+  document.getElementById('js-wb-max').textContent = _maxPlayers;
+  document.getElementById('js-wb-current').textContent = _currentPlayers;
 
+  // Logica mappa...
+  var mapDisplay = document.getElementById('map-name');
+  if (mapDisplay) mapDisplay.textContent = mapName;
+  
+  // Richiama le funzioni grafiche
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();
-// Imposta il nome della mappa nel testo
-  var mapDisplay = document.getElementById('map-name');
-  mapDisplay.textContent = mapName || 'N/A';
 
   // --- LOGICA ANTEPRIMA PERSONALIZZATA ---
   var mapImg = document.getElementById('map-image');
@@ -975,16 +977,18 @@ function DownloadingFile(fileName) {
 }
 
 function PlayerConnect(name) {
-  _currentPlayers++; // Incrementa sempre il contatore per i quadratini
-
-  // Aggiungi alla lista nomi solo se il nome è reale
-  if (name && name !== "unconnected" && name !== "") {
+  // Ignora i nomi non validi o 'unconnected'
+  if (name && name !== "unconnected" && name.length > 0) {
+    // Aggiungi il nome solo se non è già presente (evita duplicati)
     if (_playerNames.indexOf(name) === -1) {
       _playerNames.push(name);
     }
   }
-  
-  // Aggiorna sempre sia i quadratini che la lista
+
+  // Il numero di giocatori corretto è la lunghezza della nostra lista
+  _currentPlayers = _playerNames.length;
+
+  // Forza l'aggiornamento visivo di quadratini e lista nomi
   buildSlots(_currentPlayers, _maxPlayers);
   buildPlayers();
 }

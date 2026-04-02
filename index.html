@@ -34,15 +34,6 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
 .bg-slide.active { opacity:1; }
 @keyframes slow-zoom { from{transform:scale(1.0);} to{transform:scale(1.07);} }
 
-.bg-slide:nth-child(1) { background-image: url('https://eroeit4.github.io/TTT-loading/img/sfondo1.jpg'); }
-.bg-slide:nth-child(2) { background-image: url('https://eroeit4.github.io/TTT-loading/img/sfondo2.jpg'); }
-.bg-slide:nth-child(3) { background-image: url('https://eroeit4.github.io/TTT-loading/img/sfondo3.jpg'); }
-.bg-slide:nth-child(4) { background-image: url('https://eroeit4.github.io/TTT-loading/img/sfondo4.jpg'); }
-.bg-slide:nth-child(5) { background-image: url('https://eroeit4.github.io/TTT-loading/img/sfondo5.jpg'); }
-.bg-slide:nth-child(6) { background-image: url('https://eroeit4.github.io/TTT-loading/img/sfondo6.jpg'); }
-.bg-slide:nth-child(7) { background-image: url('https://eroeit4.github.io/TTT-loading/img/sfondo7.jpg'); }
-.bg-slide:nth-child(8) { background-image: url('https://eroeit4.github.io/TTT-loading/img/sfondo8.jpg'); }
-.bg-slide:nth-child(9) { background-image: url('https://eroeit4.github.io/TTT-loading/img/sfondo9.jpg'); }
 
 #bg-wrap::after {
   content:''; position:absolute; inset:0;
@@ -455,15 +446,15 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
 <body>
 
 <div id="bg-wrap">
-<div class="bg-slide active"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
-  <div class="bg-slide"></div>
+  <div class="bg-slide active" style="background-image:url('img/sfondo1.jpg')"></div>
+  <div class="bg-slide" style="background-image:url('img/sfondo2.jpg')"></div>
+  <div class="bg-slide" style="background-image:url('img/sfondo3.jpg')"></div>
+  <div class="bg-slide" style="background-image:url('img/sfondo4.jpg')"></div>
+  <div class="bg-slide" style="background-image:url('img/sfondo5.jpg')"></div>
+  <div class="bg-slide" style="background-image:url('img/sfondo6.jpg')"></div>
+  <div class="bg-slide" style="background-image:url('img/sfondo7.jpg')"></div>
+  <div class="bg-slide" style="background-image:url('img/sfondo8.jpg')"></div>
+  <div class="bg-slide" style="background-image:url('img/sfondo9.jpg')"></div>
 </div>
 <div id="scanlines"></div>
 <div id="grain"></div>

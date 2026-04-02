@@ -851,7 +851,7 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
   document.getElementById('js-server-name').textContent = serverName || 'TTT2 Server Italia';
   document.getElementById('map-name').textContent = mapName || 'N/A';
   var mapImageUrl = "asset://garrysmod/maps/thumb/" + mapName + ".png";
-  document.getElementById('map-image').style.backgroundImage = "url('img/maps/" + mapName + ".jpg')";
+  document.getElementById('map-image').style.backgroundImage = "url('asset://garrysmod/maps/thumb/" + mapName + ".png')";
   buildSlots(_currentPlayers, _maxPlayers);
 
   if (steamID && steamID !== '0') {

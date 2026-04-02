@@ -624,6 +624,15 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
 <audio id="bg-audio" preload="auto"></audio>
 
 <script>
+// --- CARICAMENTO DATABASE MAPPE ---
+var mapThumbnails = {};
+fetch('maps.json')
+  .then(function(response) { return response.json(); })
+  .then(function(data) { 
+    mapThumbnails = data; 
+    console.log("Database mappe caricato");
+  })
+  .catch(function(err) { console.error("Errore caricamento maps.json", err); });
 
 var BASE_URL = '.';
 
@@ -849,8 +858,21 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
     _maxPlayers = incomingMax;
   }
   document.getElementById('js-server-name').textContent = serverName || 'TTT2 Server Italia';
-  document.getElementById('map-name').textContent = mapName || 'N/A';
-  var mapImageUrl = "asset://garrysmod/maps/thumb/" + mapName + ".png";
+// Imposta il nome della mappa nel testo
+  var mapDisplay = document.getElementById('map-name');
+  mapDisplay.textContent = mapName || 'N/A';
+
+  // --- LOGICA ANTEPRIMA PERSONALIZZATA ---
+  var mapImg = document.getElementById('map-image');
+  var cleanName = mapName.toLowerCase();
+
+  if (mapThumbnails[cleanName]) {
+    // Se la mappa è nel nostro JSON, usiamo l'URL di Steam
+    mapImg.style.backgroundImage = "url('" + mapThumbnails[cleanName] + "')";
+  } else {
+    // Se non c'è, proviamo a usare l'asset locale di GMod come backup
+    mapImg.style.backgroundImage = "url('asset://garrysmod/maps/thumb/" + mapName + ".png')";
+  }
   document.getElementById('map-image').style.backgroundImage = "url('asset://garrysmod/maps/thumb/" + mapName + ".png')";
   buildSlots(_currentPlayers, _maxPlayers);
 
@@ -872,7 +894,19 @@ function GameDetails(serverName, serverURL, mapName, maxPlayers, steamID, gameDe
     });
   }
 }
+function SetMapName(mapName) {
+  var mapDisplay = document.getElementById('map-name');
+  var mapImg = document.getElementById('map-image');
+  var cleanName = mapName.toLowerCase();
 
+  if (mapDisplay) mapDisplay.textContent = mapName;
+
+  if (mapThumbnails[cleanName]) {
+    mapImg.style.backgroundImage = "url('" + mapThumbnails[cleanName] + "')";
+  } else {
+    mapImg.style.backgroundImage = "url('asset://garrysmod/maps/thumb/" + mapName + ".png')";
+  }
+}
 var _filesTotal = 0;
 var _filesNeeded = 0;
 

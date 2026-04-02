@@ -1050,7 +1050,7 @@ function SetStatusChanged(status) {
   // Se GMod dice che ha finito di scaricare, manda la barra al 100%
   if (status === 'Workshop Complete' || status === 'Sending client info...') {
     setBar(100);
-    fadeOutMusic(1000);
+    fadeOutMusic(100);
   }
 }
 

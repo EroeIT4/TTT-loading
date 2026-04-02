@@ -24,8 +24,14 @@
 html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); font-family:var(--body); color:var(--text); }
 
 #bg-wrap { position:fixed; inset:0; z-index:0; }
-.bg-slide { position:absolute; inset:0; background-size:cover; background-position:center; display:none; filter:brightness(0.75); }
-.bg-slide.active { display:block; }
+.bg-slide {
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  opacity:0; transition:opacity 2s ease-in-out;
+  filter:brightness(0.75) saturate(0.8);
+}
+.bg-slide.active { opacity:1; }
 @keyframes slow-zoom { from{transform:scale(1.0);} to{transform:scale(1.07);} }
 
 
@@ -440,15 +446,15 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
 <body>
 
 <div id="bg-wrap">
-  <div class="bg-slide active" style="background-image:url('img/sfondo1.jpg'); opacity:1 !important;"></div>
-  <div class="bg-slide" style="background-image:url('img/sfondo2.jpg')"></div>
-  <div class="bg-slide" style="background-image:url('img/sfondo3.jpg')"></div>
-  <div class="bg-slide" style="background-image:url('img/sfondo4.jpg')"></div>
-  <div class="bg-slide" style="background-image:url('img/sfondo5.jpg')"></div>
-  <div class="bg-slide" style="background-image:url('img/sfondo6.jpg')"></div>
-  <div class="bg-slide" style="background-image:url('img/sfondo7.jpg')"></div>
-  <div class="bg-slide" style="background-image:url('img/sfondo8.jpg')"></div>
-  <div class="bg-slide" style="background-image:url('img/sfondo9.jpg')"></div>
+  <img class="bg-slide active" src="img/sfondo1.jpg">
+  <img class="bg-slide" src="img/sfondo2.jpg">
+  <img class="bg-slide" src="img/sfondo3.jpg">
+  <img class="bg-slide" src="img/sfondo4.jpg">
+  <img class="bg-slide" src="img/sfondo5.jpg">
+  <img class="bg-slide" src="img/sfondo6.jpg">
+  <img class="bg-slide" src="img/sfondo7.jpg">
+  <img class="bg-slide" src="img/sfondo8.jpg">
+  <img class="bg-slide" src="img/sfondo9.jpg">
 </div>
 <div id="scanlines"></div>
 <div id="grain"></div>
@@ -623,12 +629,10 @@ var BASE_URL = '.';
 // ── Sfondi ────────────────────────────────────────────────────────────────────
 var slides = document.querySelectorAll('.bg-slide');
 var currentSlide = 0;
-slides[0].style.display = 'block';
+slides[currentSlide].classList.add('active');
 setInterval(function() {
-  slides[currentSlide].style.display = 'none';
   slides[currentSlide].classList.remove('active');
   currentSlide = (currentSlide + 1) % slides.length;
-  slides[currentSlide].style.display = 'block';
   slides[currentSlide].classList.add('active');
 }, 7000);
 

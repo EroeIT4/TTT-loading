@@ -320,7 +320,11 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
   position:absolute; top:0; left:0; right:0; bottom:0;
   background-size:cover; background-position:center;
   background-image:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
-  filter:brightness(0.6); transition:background-image 1s ease;
+  filter: brightness(1.0); /* Più luce */
+  image-rendering: -webkit-optimize-contrast; /* Più nitidezza su Chrome/GMod */
+  image-rendering: crisp-edges;
+  
+  transition:background-image 1s ease;
 }
 #map-overlay {
   position:absolute; top:0; left:0; right:0; bottom:0;

@@ -292,7 +292,7 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
 .staff-member:last-child { border-bottom:none; }
 /* NUOVO STILE PER AVATAR STAFF COME IMMAGINE */
 .staff-avatar {
-  width:40px; height:40px; border:1px solid var(--border);
+  width:40px; height:40px; border:2px solid var(--border);
   object-fit: cover;
   flex-shrink:0;
 }
@@ -634,6 +634,7 @@ var BASE_URL = '.';
 // ── Sfondi ────────────────────────────────────────────────────────────────────
 var slides = document.querySelectorAll('.bg-slide');
 var currentSlide = 0;
+slides[currentSlide].classList.add('active');
 setInterval(function() {
   slides[currentSlide].classList.remove('active');
   currentSlide = (currentSlide + 1) % slides.length;
@@ -760,7 +761,7 @@ function fetchSteam(steamid, callback) {
       
       // Regex migliorata per estrarre dati dall'XML di Steam
       var avatarMatch = str.match(/<avatarFull>[\s\S]*?([^<\[\]\s]+\.(?:jpg|png|jpeg))[\s\S]*?<\/avatarFull>/i);
-      var nameMatch = str.match(/<steamID>[\s\S]*?([^<\[\]\s]+)[\s\S]*?<\/steamID>/i);
+      var nameMatch = str.match(/<steamID>(?:<!\[CDATA\[)?\s*([^<\]\[]+?)\s*(?:\]\]>)?<\/steamID>/i);
       
       var avatar = (avatarMatch && avatarMatch[1]) ? avatarMatch[1].trim() : null;
       var name = (nameMatch && nameMatch[1]) ? nameMatch[1].trim() : null;

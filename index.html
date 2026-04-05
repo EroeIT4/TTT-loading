@@ -259,10 +259,8 @@ html,body { width:100%; height:100%; overflow:hidden; background:var(--dark); fo
   font-family:var(--display); font-size: clamp(14px, 1.8vw, 22px); /* AUMENTATO da 18px */ 
 
   color:#fff; letter-spacing:2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 400px;
+  letter-spacing: 2px;
+
 }
 #welcome-greet span { color:var(--red-glow); text-shadow:0 0 10px rgba(231,76,60,0.5); }
 #welcome-steamid {
@@ -787,7 +785,12 @@ var TRACKS = [
   { title: 'Doom — Untitled',        src: BASE_URL + '/music/doom_untitled.mp3' },
   { title: 'Counter-Strike: Global Offensive — Main Theme',        src: BASE_URL + '/music/csgo_theme.mp3' },
   { title: 'Counter-Strike 1.6 — Main Theme',        src: BASE_URL + '/music/cs16_theme.mp3' },
-  { title: 'Deus Ex — NYC Streets Combat',        src: BASE_URL + '/music/deusex_nyccombat.mp3' }
+  { title: 'Raze — Main Theme',        src: BASE_URL + '/music/raze_main.mp3' },
+  { title: 'Battlefield 4 — Main Theme',        src: BASE_URL + '/music/b4_main.mp3' },
+  { title: 'Strike Force Heroes 2 — Main Theme',        src: BASE_URL + '/music/sfh2_main.mp3' },
+  { title: 'Modern Warfare 3 — London Attack',        src: BASE_URL + '/music/mw3_london.mp3' },
+  { title: 'Modern Warfare 3 — Hamburg Invasion',        src: BASE_URL + '/music/mw3_hamburg.mp3' }
+  
 
 ];
 var bgAudio = document.getElementById('bg-audio');
